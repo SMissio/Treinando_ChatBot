@@ -1,4 +1,4 @@
-# criacao do chatot
+# criacao do chatbot
 
 #importando bibliotecas
 
