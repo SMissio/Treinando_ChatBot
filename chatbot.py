@@ -138,4 +138,10 @@ for tamanho in range (1, 25 + 1):
         if len(i[1]) == tamanho:
             perguntas_limpas_ordenadas.append(perguntas_para_int[i[0]])
             respostas_limpas_ordenadas.append(respostas_para_int[i[0]])
-#Seq2Seq construção:
+#Seq2Seq construção
+def entradas_modelo():
+    entradas = tf.placeholder(tf.int32,[None,None], name = 'entradas')
+    saidas = tf.placeholder(tf.int32,[None,None], name = 'saidas')
+    lr = tf.placeholder(tf.float32, name = 'learning_rate')
+    keep_prob = tf.placeholder(tf.float32, name = 'keep_prob')
+    return entradas, saidas, lr, keep_prob
