@@ -348,7 +348,7 @@ erro_total_treinamento = 0
 lista_validacao_erro = []
 early_stopping_checagem = 0
 early_stopping_parada = 1000
-checkpoint = "./chatbot_pesos.ckpt"
+checkpoint = "./chatbot_pesos.ckpt"# ./
 session.run(tf.global_variables_initializer())
 for epoca in range(1, epocas + 1):
     for indice_batch, (perguntas_no_batch_padded, respostas_no_batch_padded) in enumerate(divide_batches(perguntas_treinamento, respostas_treinamento, batch_size)):
@@ -402,3 +402,42 @@ for epoca in range(1, epocas + 1):
         print('Isso é o melhor que eu posso fazer')
         break
 print('Final')
+
+####Teste####
+checkpoint = "./chatbot_pesos.ckpt"
+session = tf.InteractiveSession()
+session.run(tf.global_variables_initializer())
+saver = tf.train.Saver()
+saver.restore(session, checkpoint)
+
+#####Conversao string/inteiros
+def converte_string_para_int(pergunta, palavra_para_int):
+    pergunta = limpar_texto(pergunta)
+    return[palavra_para_int.get(palavra, palavra_para_int['<OUT>']) for palavra in pergunta.split()]
+converte_string_para_int("i'am a robot", perguntas_palavras_int)
+
+#conversa
+while(True):
+    pergunta = input('Você: ')
+    if pergunta == 'Tchau':
+        break
+    pergunta = converte_string_para_int(pergunta,perguntas_palavras_int)
+    pergunta = pergunta +[perguntas_palavras_int['<PAD>']] * (25 - len(pergunta))
+    batch_falso = np.zeros((batch_size, 25))
+    batch_falso[0] = pergunta
+    resposta_prevista = session.run(previsoes_teste, fees_dict = {entradas:batch_falso,
+                                                                  keep_prob: 1})[0]
+    respostas = ''
+    for i in np.argmax(resposta_prevista, 1):
+        if respostas_int_palavras[i] == 'i':
+            token = 'I'
+        elif respostas_int_palavras[i] =='<EOS>':
+            token = '.'
+        elif respostas_int_palavras[i] == '<OUT>':
+            token = 'out'
+        else:
+            token = ' ' + respostas_int_palavras[i]
+        resposta += token
+        if token == '.':
+            break
+    print('Chatbot: ' + resposta)
