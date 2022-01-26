@@ -1,0 +1,8 @@
+Base utilizada para estudo e entendimento da lógica e programação.
+
+Curso:
+TensorFlow, Deep Learning e Python
+
+Prof: Jones Granatyr
+Ligency I Team
+IA Expert Academy
